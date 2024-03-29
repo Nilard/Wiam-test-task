@@ -4,11 +4,10 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\Image;
 
 class SiteController extends Controller
 {
@@ -61,68 +60,61 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $max = 1000;
+        $images = array_column(Image::find()->asArray()->all(), 'image_id');
+        $imageId = 0;
+        $break = 0;
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        while ($break < $max) {
+            $imageId = rand(1, $max);
+            if (in_array($imageId, $images)) {
+                $break++;
+            } else {
+                break;
+            }
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
+        $imageUrl = "https://picsum.photos/id/{$imageId}/600/500";
 
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
+        return $this->render('index', [
+            'imageId' => $imageId,
+            'imageUrl' => $imageUrl,
         ]);
     }
 
     /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
+     * Approve action.
      *
      * @return Response|string
      */
-    public function actionContact()
+    public function actionApprove($imageId)
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $image = new Image();
+        $image->image_id = $imageId;
+        $image->status = Image::STATUS_APPROVED;
 
-            return $this->refresh();
+        if ($image->save()) {
+            return ['success' => true];
         }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        return ['success' => false];
     }
 
     /**
-     * Displays about page.
+     * Reject action.
      *
-     * @return string
+     * @return Response|string
      */
-    public function actionAbout()
+    public function actionReject($imageId)
     {
-        return $this->render('about');
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $image = new Image();
+        $image->image_id = $imageId;
+        $image->status = Image::STATUS_REJECTED;
+
+        if ($image->save()) {
+            return ['success' => true];
+        }
+        return ['success' => false];
     }
 }

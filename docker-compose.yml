@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  app:
+    image: yiisoftware/yii2-php:8.2-fpm-nginx
+    volumes:
+      - ./yii2-app:/app
+    ports:
+      - 80:80
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: 'yii2db'
+      POSTGRES_USER: 'yii2user'
+      POSTGRES_PASSWORD: 'yii2pass'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
