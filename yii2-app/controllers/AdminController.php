@@ -45,9 +45,13 @@ class AdminController extends Controller
      */
     public function actionCancelDecision($imageId)
     {
+        // Sets response format to JSON.
         Yii::$app->response->format = Response::FORMAT_JSON;
+
+        // Finds image in database.
         $image = Image::find()->where(['image_id' => $imageId])->one();
 
+        // Removes image from database.
         if ($image && $image->delete()) {
             return ['success' => true];
         }
