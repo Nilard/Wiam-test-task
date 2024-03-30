@@ -65,6 +65,8 @@ class SiteController extends Controller
         $imageId = 0;
         $break = 0;
 
+        // Checks if image already exists in tha database.
+        // To avoid infinite loop this cycle is limited.
         while ($break < $max) {
             $imageId = rand(1, $max);
             if (in_array($imageId, $images)) {
@@ -89,11 +91,15 @@ class SiteController extends Controller
      */
     public function actionApprove($imageId)
     {
+        // Sets response format to JSON.
         Yii::$app->response->format = Response::FORMAT_JSON;
+
+        // Creates image with appropriate status.
         $image = new Image();
         $image->image_id = $imageId;
         $image->status = Image::STATUS_APPROVED;
 
+        // Adds image to database.
         if ($image->save()) {
             return ['success' => true];
         }
@@ -107,11 +113,15 @@ class SiteController extends Controller
      */
     public function actionReject($imageId)
     {
+        // Sets response format to JSON.
         Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        // Creates image with appropriate status.
         $image = new Image();
         $image->image_id = $imageId;
         $image->status = Image::STATUS_REJECTED;
 
+        // Adds image to database.
         if ($image->save()) {
             return ['success' => true];
         }
