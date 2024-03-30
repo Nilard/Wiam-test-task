@@ -11,11 +11,13 @@ $this->title = Yii::t('app', 'Home page');
     <div class="body-content">
 
         <div class="mb-3">
+            <!-- Image -->
             <img src="<?= $imageUrl ?>" alt="<?= Yii::t('app', 'Random Image') ?>">
         </div>
 
         <div class="d-flex gap-3">
-
+            
+            <!-- Action buttons -->
             <?= Button::widget([
                 'label' => Yii::t('app', 'Approve'),
                 'options' => [
@@ -24,7 +26,6 @@ $this->title = Yii::t('app', 'Home page');
                     'class' => 'btn-success',
                 ]
             ]) ?>
-
             <?= Button::widget([
                 'label' => Yii::t('app', 'Reject'),
                 'options' => [
