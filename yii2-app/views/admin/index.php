@@ -11,6 +11,7 @@ $this->title = Yii::t('app', 'Admin page');
 ?>
 <div class="admin-index">
     <div class="table-responsive">
+        <!-- Table with results -->
         <table class="table">
             <thead>
                 <tr>
@@ -22,13 +23,18 @@ $this->title = Yii::t('app', 'Admin page');
             <tbody>
                 <?php foreach ($images as $image): ?>
                     <tr>
-                        <td><?= Html::a($image->image_id, ["https://picsum.photos/id/{$image->image_id}/600/500"]) ?></td>
                         <td>
+                            <!-- Image ID with link -->
+                            <?= Html::a($image->image_id, ["https://picsum.photos/id/{$image->image_id}/600/500"]) ?>
+                        </td>
+                        <td>
+                            <!-- Status of image -->
                             <span class="badge <?= $image->status === Image::STATUS_APPROVED ? 'text-bg-success' : 'text-bg-danger' ?>">
                                 <?= $image->status === Image::STATUS_APPROVED ? Yii::t('app', 'Approved') : Yii::t('app', 'Rejected') ?>
                             </span>
                         </td>
                         <td>
+                            <!-- Action button -->
                             <?= Button::widget([
                                 'label' => Yii::t('app', 'Cancel decision'),
                                 'options' => [
